@@ -6,7 +6,7 @@ const addClient = async (req, res) => {
   await response
     .save()
     .then((list) => {
-      // console.log(list);
+      console.log(list);
       res.status(200).send('Document saved to database');
     })
     .catch((error) => {
@@ -18,7 +18,7 @@ const addClient = async (req, res) => {
 const getClients = async (req, res) => {
   await ClientModel.find()
     .then((list) => {
-      // console.log(list);
+      console.log(list);
       res.status(200).send(list);
     })
     .catch((error) => {
