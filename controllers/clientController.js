@@ -1,6 +1,7 @@
 const { ClientModel } = require('../models/clientModel');
 const { body, validationResult } = require('express-validator');
 const errorHandler = require('../middlewares/errorHandlerMiddleware');
+const bcrypt = require('bcrypt');
 
 const validateInput = [
   body('name').isLength({ min: 3 }).trim().escape(),
@@ -19,9 +20,19 @@ const handleValidationErrors = (req, res, next) => {
 };
 
 const addClient = async (req, res) => {
-  const { name, id, phone, email, entity, segment } = req.body;
+  const { name, phone, email, entity, segment } = req.body;
 
-  const response = new ClientModel({ name, phone, email, entity, segment });
+  const hashedName = await bcrypt.hash(name, 10);
+  const hashedPhone = await bcrypt.hash(phone, 10);
+  const hashedEmail = await bcrypt.hash(email, 10);
+
+  const response = new ClientModel({
+    name: hashedName,
+    phone: hashedPhone,
+    email: hashedEmail,
+    entity,
+    segment,
+  });
   await response
     .save()
     .then((list) => {
